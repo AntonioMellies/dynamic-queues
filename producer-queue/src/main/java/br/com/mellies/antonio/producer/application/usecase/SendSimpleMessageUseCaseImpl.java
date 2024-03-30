@@ -4,9 +4,13 @@ import br.com.mellies.antonio.producer.core.exception.UseCaseException;
 import br.com.mellies.antonio.producer.core.queue.QueueMessage;
 import br.com.mellies.antonio.producer.core.queue.QueueProvider;
 import io.quarkus.runtime.util.StringUtil;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+
+import java.util.Date;
 
 public class SendSimpleMessageUseCaseImpl implements SendSimpleMessageUseCase {
 
+  private final static String CHANNEL = "SIMPLE_STRING_MESSAGE";
   private final QueueProvider queueProvider;
 
   public SendSimpleMessageUseCaseImpl(QueueProvider queueProvider) {
@@ -18,8 +22,8 @@ public class SendSimpleMessageUseCaseImpl implements SendSimpleMessageUseCase {
 
     if (StringUtil.isNullOrEmpty(input)) throw new UseCaseException("Message not found");
 
-    QueueMessage message = QueueMessage.builder().message(input).build();
-    queueProvider.sendMessage(message, "chanel");
+    var message = QueueMessage.builder().message(input).build();
+    queueProvider.sendMessage(message, CHANNEL);
 
     return null;
   }

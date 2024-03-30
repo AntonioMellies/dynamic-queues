@@ -1,15 +1,24 @@
 package br.com.mellies.antonio.producer.core.queue;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class QueueMessage {
+public class QueueMessage<T> implements Serializable {
 
   UUID id;
-  String message;
+  T data;
 
   public QueueMessage(QueueMessageBuilder queueMessageBuilder) {
     this.id = queueMessageBuilder.id;
-    this.message = queueMessageBuilder.message;
+    this.data = (T) queueMessageBuilder.data;
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public T getData() {
+    return data;
   }
 
   public static QueueMessageBuilder builder() {
@@ -18,10 +27,10 @@ public class QueueMessage {
 
   public static class QueueMessageBuilder {
     UUID id;
-    String message;
+    Object data;
 
-    public QueueMessageBuilder message(String message) {
-      this.message = message;
+    public QueueMessageBuilder message(Object data) {
+      this.data = data;
       return this;
     }
 
