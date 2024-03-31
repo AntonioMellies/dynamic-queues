@@ -1,4 +1,4 @@
-package br.com.mellies.antonio.producer.core.exception;
+package br.com.mellies.antonio.core.exception;
 
 public class CustomException extends Exception {
 

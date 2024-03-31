@@ -1,30 +1,24 @@
 package br.com.mellies.antonio.producer.application.usecase;
 
-import br.com.mellies.antonio.producer.core.exception.UseCaseException;
-import br.com.mellies.antonio.producer.core.queue.QueueMessage;
-import br.com.mellies.antonio.producer.core.queue.QueueProvider;
+import br.com.mellies.antonio.core.exception.UseCaseException;
+import br.com.mellies.antonio.producer.application.ports.SimpleMessageQueuePort;
 import io.quarkus.runtime.util.StringUtil;
-import org.eclipse.microprofile.reactive.messaging.Channel;
-
-import java.util.Date;
 
 public class SendSimpleMessageUseCaseImpl implements SendSimpleMessageUseCase {
 
   private final static String CHANNEL = "SIMPLE_STRING_MESSAGE";
-  private final QueueProvider queueProvider;
+  private final SimpleMessageQueuePort simpleMessageQueuePort;
 
-  public SendSimpleMessageUseCaseImpl(QueueProvider queueProvider) {
-    this.queueProvider = queueProvider;
+  public SendSimpleMessageUseCaseImpl(SimpleMessageQueuePort simpleMessageQueuePort) {
+    this.simpleMessageQueuePort = simpleMessageQueuePort;
   }
 
   @Override
   public Boolean execute(String input) throws UseCaseException {
 
-    if (StringUtil.isNullOrEmpty(input)) throw new UseCaseException("Message not found");
+    if (StringUtil.isNullOrEmpty(input))
+      throw new UseCaseException("Message not found");
 
-    var message = QueueMessage.builder().message(input).build();
-    queueProvider.sendMessage(message, CHANNEL);
-
-    return null;
+    return simpleMessageQueuePort.sendSimpleMensageToQueue(input, CHANNEL);
   }
 }

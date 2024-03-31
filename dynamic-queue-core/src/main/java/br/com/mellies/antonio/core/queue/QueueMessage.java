@@ -1,4 +1,4 @@
-package br.com.mellies.antonio.producer.core.queue;
+package br.com.mellies.antonio.core.queue;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -13,12 +13,19 @@ public class QueueMessage<T> implements Serializable {
     this.data = (T) queueMessageBuilder.data;
   }
 
+  public QueueMessage() {
+  }
+
   public UUID getId() {
     return id;
   }
 
   public T getData() {
     return data;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
   }
 
   public static QueueMessageBuilder builder() {

@@ -1,8 +1,8 @@
 package br.com.mellies.antonio.producer.infrastracture.configuration;
 
+import br.com.mellies.antonio.producer.application.ports.SimpleMessageQueuePort;
 import br.com.mellies.antonio.producer.application.usecase.SendSimpleMessageUseCase;
 import br.com.mellies.antonio.producer.application.usecase.SendSimpleMessageUseCaseImpl;
-import br.com.mellies.antonio.producer.core.queue.QueueProvider;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
@@ -10,16 +10,16 @@ import jakarta.inject.Inject;
 @Dependent
 public class UseCasesConfiguration {
 
-  private final QueueProvider queueProvider;
+  private final SimpleMessageQueuePort simpleMessageQueuePort;
 
   @Inject
-  public UseCasesConfiguration(QueueProvider queueProvider) {
-    this.queueProvider = queueProvider;
+  public UseCasesConfiguration(SimpleMessageQueuePort simpleMessageQueuePort) {
+    this.simpleMessageQueuePort = simpleMessageQueuePort;
   }
 
   @Produces
   public SendSimpleMessageUseCase sendSimpleMessageUseCase() {
-    return new SendSimpleMessageUseCaseImpl(queueProvider);
+    return new SendSimpleMessageUseCaseImpl(simpleMessageQueuePort);
   }
 
 }
