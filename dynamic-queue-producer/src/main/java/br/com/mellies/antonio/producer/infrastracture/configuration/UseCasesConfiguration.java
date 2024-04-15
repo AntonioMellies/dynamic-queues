@@ -1,6 +1,6 @@
 package br.com.mellies.antonio.producer.infrastracture.configuration;
 
-import br.com.mellies.antonio.producer.application.ports.SimpleMessageQueuePort;
+import br.com.mellies.antonio.producer.application.ports.outbound.SimpleMessageQueueRepository;
 import br.com.mellies.antonio.producer.application.usecase.SendSimpleMessageUseCase;
 import br.com.mellies.antonio.producer.application.usecase.SendSimpleMessageUseCaseImpl;
 import jakarta.enterprise.context.Dependent;
@@ -10,16 +10,16 @@ import jakarta.inject.Inject;
 @Dependent
 public class UseCasesConfiguration {
 
-  private final SimpleMessageQueuePort simpleMessageQueuePort;
+  private final SimpleMessageQueueRepository simpleMessageQueueRepository;
 
   @Inject
-  public UseCasesConfiguration(SimpleMessageQueuePort simpleMessageQueuePort) {
-    this.simpleMessageQueuePort = simpleMessageQueuePort;
+  public UseCasesConfiguration(SimpleMessageQueueRepository simpleMessageQueueRepository) {
+    this.simpleMessageQueueRepository = simpleMessageQueueRepository;
   }
 
   @Produces
   public SendSimpleMessageUseCase sendSimpleMessageUseCase() {
-    return new SendSimpleMessageUseCaseImpl(simpleMessageQueuePort);
+    return new SendSimpleMessageUseCaseImpl(simpleMessageQueueRepository);
   }
 
 }

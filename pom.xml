@@ -17,7 +17,7 @@
 
     <modules>
         <module>dynamic-queue-core</module>
-        <module>producer-queue</module>
-        <module>consumer-queue</module>
+        <module>dynamic-queue-producer</module>
+        <module>dynamic-queue-consumer</module>
     </modules>
 </project>
