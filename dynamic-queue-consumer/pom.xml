@@ -47,6 +47,10 @@
             <artifactId>quarkus-messaging-kafka</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-messaging-rabbitmq</artifactId>
+        </dependency>
+        <dependency>
             <groupId>br.com.mellies.antonio</groupId>
             <artifactId>dynamic-queue-core</artifactId>
             <version>1.0.0</version>
