@@ -1,127 +1,153 @@
-# producer-queue
+# Dynamic Queues
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Este é um projeto Java desenvolvido utilizando a versão 17 da linguagem e o framework Quarkus.
+O principal objetivo deste projeto é implementar dois sistemas de filas de mensagens (mensageria) de forma dinâmica:
+Kafka e
+RabbitMQ.
+Para alcançar isso, aplicamos conceitos da arquitetura hexagonal (Port and Adapters), o que nos permite trocar
+facilmente
+a tecnologia ou o comportamento da aplicação apenas informando a escolha através de uma variável de ambiente.
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+## Requisitos
 
-## Running the application in dev mode
+- Java 17 ou superior
+- Apache Maven 3.6.3 ou superior
+- Quarkus 3.9.1
+- Docker*
 
-You can run your application in dev mode that enables live coding using:
+*'Caso queira subir todos os recursos necessários localmente
 
-```shell script
-./mvnw compile quarkus:dev
+## Instalação
+
+1. Certifique-se de ter o Java 17 instalado corretamente em sua máquina.
+2. Instale o Apache Maven seguindo as instruções em [Maven Installation Guide](https://maven.apache.org/install.html).
+3. Clone este repositório em sua máquina local:
+
+```bash
+git clone https://github.com/antoniomellies/dynamic-queues
+````
+
+## Estrutura
+
+Esse projeto possui 3 módulos, sendo eles:
+
+1. dynamic-queue-core: Responsável por gerenciar interfaces e arquivos em comum das aplicações
+2. dynamic-queue-producer: Responsável por produzir itens nas filas
+3. dynamic-queue-consumer: Responsável por receber e processar itens das filas
+
+## Compilação e Execução
+
+1. Navegue até o diretório do projeto:
+
+```bash
+cd dynamic-queues
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+2. Compile o projeto utilizando o Maven:
 
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
+```bash
+mvn clean package
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+Inicie a aplicação 'dynamic-queue-producer':
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
+```bash
+cd dynamic-queues-consumer
+java -jar target/dynamic-queues-producer-1.0.0.jar
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+Volte para o diretório principal do projeto:
 
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
+```bash
+cd ..
 ```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+Inicie a aplicação 'dynamic-queue-consumer':
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
+```bash
+cd dynamic-queues-consumer
+java -jar target/dynamic-queues-consumer-1.0.0.jar
 ```
 
-You can then execute your native executable with: `./target/producer-queue-1.0-SNAPSHOT-runner`
+## Ambiente
 
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
+Para execução das aplicações é necessário que os serviços Kafka e/ou RabbitMQ estejam rodando.
+As aplicações estão configuradas para serviços rodando localmente, caso você tenha esses serviços rodando em outro local
+é possível configurar através de variáveis de ambiente.
 
-## Provided Code
+### Variáveis
 
-### REST
+| Variável                | Valor padrão   | Descrição                         |
+|-------------------------|----------------|-----------------------------------|
+| KAFKA_BOOTSTRAP_SERVERS | localhost:9092 | Endereço do serviço Kafka         |
+| RABBITMQ_HOST           | localhost      | Endereço host do serviço RabbitMQ |
+| RABBITMQ_PORT           | 5672           | Porta de serviço RabbitMQ         |
+| RABBITMQ_USERNAME       | guest          | Usuario do serviço RabbitMQ       |
+| RABBITMQ_PASSWORD       | guest          | Senha do serviço RabbitMQ         |
 
-Easily start your REST Web Services
+### Docker Compose
 
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+Para facilitar os testes locais existe um arquivo de docker-compose.
 
-# ---------------------------------------------------
-
-# consumer-queue
-
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
-
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
-
-## Running the application in dev mode
-
-You can run your application in dev mode that enables live coding using:
-
-```shell script
-./mvnw compile quarkus:dev
+1. Subindo os containers dos serviços:
+```bash
+docker-compose up -d
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
-
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
+2. Verificando os containers:
+```bash
+docker ps
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+## Aplicações
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+Por padrão as aplicações producer e consumer rodam nas portas 8081 e 8080 respectivamente.
 
-If you want to build an _über-jar_, execute the following command:
+### Fluxo das aplicações
 
-```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
+```mermaid
+sequenceDiagram
+    User ->> Producer: Http Request
+    Producer ->> Queue: Send
+    Consumer --> Queue: Read the message
+    Consumer -->> Process: Process message
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+### Enviando mensagem para fila
 
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
+```bash
+curl -X POST --location "http://localhost:8081/simple-message" \
+    -H "Content-Type: */*" \
+    -d  '{
+           "message": "MESSAGE TEST"
+        }' 
 ```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+### Alterando sistema de filas
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
+Nesse projeto foi implementado dois sistemas de filas distintos, sendo eles Kafka e RabbitMQ. Podemos escolher o sistema
+que queremos utilizar alterando a variavel de ambiente 'QUEUE_SYSTEM'.
+Por padrão as aplicações utilizam [Kafka](https://kafka.apache.org/).
 
-You can then execute your native executable with: `./target/consumer-queue-1.0-SNAPSHOT-runner`
+| Valores possíveis | Sistema de mensageria                 |
+|-------------------|---------------------------------------|
+| kafka             | [Kafka](https://kafka.apache.org/)    |
+| rabbitmq          | [RabbitMQ](https://www.rabbitmq.com/) |
 
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
+### Analisando resultado
 
-## Provided Code
+Quando uma mensagem é enviada podemos analisar os logs das aplicações para verificar o envio,recebimento e processamento
+da mensagem.
 
-### REST
+- Log na aplicação de envio de mensagem (Producer)
+  ![Producer Log](./assets/log-producer.png)
 
-Easily start your REST Web Services
+- Log na aplicação de recebimento e processamento da mensagem (Consumer)
+  ![Consumer Log](./assets/log-consumer.png)
 
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+## Contribuição
+
+Sinta-se à vontade para contribuir com melhorias, reportar problemas ou enviar solicitações de pull request.
+
+## License
+MIT
