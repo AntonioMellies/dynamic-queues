@@ -150,4 +150,4 @@ da mensagem.
 Sinta-se à vontade para contribuir com melhorias, reportar problemas ou enviar solicitações de pull request.
 
 ## License
-MIT
+[MIT](LICENSE.txt)
